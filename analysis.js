@@ -64,7 +64,8 @@ function FileBuilder()
 {
 	this.FileName = "";
 	// Number of strings in a file.
-	this.Strings = 0;
+	count = 0;
+	this.Strings = count;
 	// Number of imports in a file.
 	this.ImportCount = 0;
 
@@ -99,6 +100,19 @@ function traverseWithParents(object, visitor)
     }
 }
 
+function countConditions(node){
+	count = 0;
+	traverseWithParents(node, function(node){
+		if(node.type === "LogicalExpression" && (node.operator === "&&" || node.operator === "||")){
+			count++;
+		}
+	})
+	if(count > 0 ){
+		count++;
+	}
+	return count; 
+}
+
 function complexity(filePath)
 {
 	var buf = fs.readFileSync(filePath, "utf8");
@@ -111,23 +125,61 @@ function complexity(filePath)
 	fileBuilder.FileName = filePath;
 	fileBuilder.ImportCount = 0;
 	builders[filePath] = fileBuilder;
+	fileBuilder.Strings=0;
 
 	// Tranverse program with a function visitor.
 	traverseWithParents(ast, function (node) 
 	{
+		count=0;
 		if (node.type === 'FunctionDeclaration') 
 		{
 			var builder = new FunctionBuilder();
+			// function nestedCyclo(node, counter){
+			// 	console.log(counter)		//this function is to go into the nested bodies. I can't get the count to increment. Would use for the SimpleCycloCount
+			// 	if(!node){
+			// 		return counter
+			// 	}
+			// 	if(node){
+					
+			// 		if(isDecision(node)){
+			// 			let counter= counter +1
+			// 			console.log(counter)
+			// 		}
+			// 		if(node.body && Array.isArray(node.body)){
+			// 			for(i=0; i< childrenLength(node.body); i++)
+			// 				console.log(node.body[i].type)
+			// 				nestedCyclo(node.body[i], count)
+			// 		}
+			// 		else{
+			// 			nestedCyclo(node.body)
+			// 		}
+				
+			// 	}
+			// }
 
 			builder.FunctionName = functionName(node);
 			builder.StartLine    = node.loc.start.line;
-
+			builder.ParameterCount = node.params.length
+			builder.SimpleCyclomaticComplexity=1;
 			builders[builder.FunctionName] = builder;
+		
+			traverseWithParents(ast, function(node){
+				if(isDecision(node)===true){
+					builder.SimpleCyclomaticComplexity+=1
+					builder.MaxConditions+=1
+				}
+			})
 		}
+		
+		if(node.type === "Literal"){
+			fileBuilder.Strings+=1;
+		}
+		
 
 	});
 
 }
+
 
 // Helper function for counting children of node.
 function childrenLength(node)
