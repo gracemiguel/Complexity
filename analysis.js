@@ -14,6 +14,8 @@ function main()
 	
 	complexity(filePath);
 
+
+
 	// Report
 	for( var node in builders )
 	{
@@ -112,7 +114,13 @@ function countConditions(node){
 	}
 	return count; 
 }
-
+//helper method to return strings
+function getStrings(){
+	for( var node in builders )
+	{
+		return builders[node].Strings;
+	}
+}
 function complexity(filePath)
 {
 	var buf = fs.readFileSync(filePath, "utf8");
@@ -183,10 +191,7 @@ function complexity(filePath)
 	});
 
 }
-//helper function for getting strings
-function getStrings(){
-	return fileBuilder.Strings; 
-}
+
 
 // Helper function for counting children of node.
 function childrenLength(node)
@@ -335,3 +340,4 @@ mints.toString().split(".")[0] + " " + szmin;
       }
   }
  exports.complexity = complexity;
+ exports.getStrings = getStrings
