@@ -8,7 +8,7 @@ function main()
 
 	if( args.length == 0 )
 	{
-		args = ["analysis.js"];
+		args = ["mystery.js"];
 	}
 	var filePath = args[0];
 	
@@ -177,11 +177,13 @@ function complexity(filePath)
 		if(node.type === "Literal"){
 			fileBuilder.Strings+=1;
 		}
+		
+	
 
 	});
 
 }
-
+//helper function for getting strings
 
 // Helper function for counting children of node.
 function childrenLength(node)
