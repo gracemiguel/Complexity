@@ -184,6 +184,9 @@ function complexity(filePath)
 
 }
 //helper function for getting strings
+function getStrings(){
+	return fileBuilder.Strings; 
+}
 
 // Helper function for counting children of node.
 function childrenLength(node)
