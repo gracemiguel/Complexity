@@ -163,18 +163,19 @@ function complexity(filePath)
 			builder.SimpleCyclomaticComplexity=1;
 			builders[builder.FunctionName] = builder;
 		
-			traverseWithParents(ast, function(node){
-				if(isDecision(node)===true){
-					builder.SimpleCyclomaticComplexity+=1
-					builder.MaxConditions+=1
-				}
-			})
+			
 		}
 		
+		traverseWithParents(ast, function(node){
+			if(isDecision(node)===true){
+				builder.SimpleCyclomaticComplexity+=1
+				builder.MaxConditions+=1
+			}
+		})
+			
 		if(node.type === "Literal"){
 			fileBuilder.Strings+=1;
 		}
-		
 
 	});
 
